@@ -22,7 +22,7 @@
           &kp Q &kp W &kp E &kp R &kp T                                                     &kp Y &kp U &kp I &kp O &kp P 
           &mt LEFT_SHIFT A &mt LEFT_CONTROL S &mt LEFT_ALT D &mt LEFT_GUI F &kp G           &kp H &mt RIGHT_GUI J &mt RIGHT_ALT K &mt RIGHT_CONTROL L &mt LEFT_SHIFT SINGLE_QUOTE 
           &kp Z &kp X &kp C &kp V &kp B                                                     &kp N &kp M &kp COMMA &kp DOT &kp SLASH 
-          &mo 4 &kp SPACE                                                                   &kp BACKSPACE &mo 3
+          &mo 3 &kp SPACE                                                                   &kp BACKSPACE &mo 2
           >;
         };
   layer1 {
@@ -30,37 +30,29 @@
           &kp Q &kp W &kp E &kp R &kp T                 &kp Y &kp U &kp I &kp O &kp P 
           &kp A &kp S &kp D &kp F &kp G                 &kp H &kp J &kp K &kp L &kp SINGLE_QUOTE 
           &kp Z &kp X &kp C &kp V &kp B                 &kp N &kp M &kp COMMA &kp DOT &kp SLASH 
-          &mo 4 &kp SPACE                               &kp BACKSPACE &mo 3
+          &mo 3 &kp SPACE                               &kp BACKSPACE &mo 2
           >;
         };
   layer2 {
           bindings = <
-          &kp Q &kp W &kp F &kp P &kp G                                                     &kp J &kp L &kp U &kp Y &kp SINGLE_QUOTE 
-          &mt LEFT_SHIFT A &mt LEFT_CONTROL R &mt LEFT_ALT S &mt LEFT_GUI T &kp D           &kp H &mt RIGHT_GUI N &mt RIGHT_ALT E &mt RIGHT_CONTROL I &mt RIGHT_SHIFT O 
-          &kp Z &kp X &kp C &kp V &kp B                                                     &kp K &kp M &kp COMMA &kp DOT &kp SLASH 
-          &mo 4 &kp SPACE                                                                   &kp BACKSPACE &mo 3
+          &kp ESCAPE &kp TILDE &kp LBRC &kp RBRC &kp GRAVE              &kp SEMICOLON &kp LBKT &kp RBKT &kp LPAR &kp RPAR 
+          &kp EXCL &kp AT &kp HASH &kp DLLR &kp PERCENT                 &kp MINUS &sk LGUI &sk RALT &sk LSFT &sk LCTL 
+          &kp CARET &kp AMPS &kp BACKSLASH &kp SLASH &kp PIPE           &kp EQUAL &kp PLUS &kp ASTRK &kp QUESTION &kp TILDE 
+          &mo 4 &kp SPACE                                               &kp BACKSPACE &trans
           >;
         };
   layer3 {
           bindings = <
-          &kp ESCAPE &kp TILDE &kp LBRC &kp RBRC &kp GRAVE              &kp SEMICOLON &kp LBKT &kp RBKT &kp LPAR &kp RPAR 
-          &kp EXCL &kp AT &kp HASH &kp DLLR &kp PERCENT                 &kp MINUS &sk LGUI &sk RALT &sk LSFT &sk LCTL 
-          &kp CARET &kp AMPS &kp BACKSLASH &kp SLASH &kp PIPE           &kp EQUAL &kp PLUS &kp ASTRK &kp QUESTION &kp TILDE 
-          &mo 5 &kp SPACE                                               &kp BACKSPACE &trans
+          &kp ESCAPE &kp C_MUTE &kp C_VOLUME_DOWN &kp C_VOLUME_UP &kp C_BRI_INC         &kp PAGE_UP &kp HOME &kp UP &kp END &kp DELETE 
+          &sk LCTL &sk LSFT &sk LALT &sk LGUI &kp C_BRI_DEC                             &kp TAB &kp LEFT &kp DOWN &kp RIGHT &kp ENTER 
+          &kp CAPSLOCK &kp C_STOP &kp C_REWIND &kp C_FAST_FORWARD &kp C_PLAY_PAUSE      &kp PAGE_DOWN &kp CAPSLOCK &tog 2 &tog 1 &tog 0 
+          &trans &kp SPACE                                                              &kp BACKSPACE &mo 4
           >;
         };
   layer4 {
           bindings = <
-          &kp ESCAPE &kp C_MUTE &kp C_VOLUME_DOWN &kp C_VOLUME_UP &kp C_BRI_INC         &kp PAGE_UP &kp HOME &kp UP &kp END &kp DELETE 
-          &sk LCTL &sk LSFT &sk LALT &sk LGUI &kp C_BRI_DEC                             &kp TAB &kp LEFT &kp DOWN &kp RIGHT &kp ENTER 
-          &kp CAPSLOCK &kp C_STOP &kp C_REWIND &kp C_FAST_FORWARD &kp C_PLAY_PAUSE      &kp PAGE_DOWN &kp BT_CLR &tog 2 &tog 1 &tog 0 
-          &trans &kp SPACE                                                              &kp BACKSPACE &mo 5
-          >;
-        };
-  layer5 {
-          bindings = <
           &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 
-          &sk LCTL &sk LSFT &sk LALT &sk LGUI &kp F11       &kp F12 &sk LGUI &sk LALT &sk LSFT &sk LCTL 
+          &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &sk LGUI &kp F11       &kp F12 &sk LGUI &sk LALT &sk LSFT &bt BT_CLR 
           &kp F1 &kp F2 &kp F3 &kp F4 &kp F5                &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 
           &trans &kp SPACE                                  &kp BACKSPACE &trans
           >;
