@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cradio Keymap — mescam</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --key-bg: #21262d;
+    --key-border: #30363d;
+    --mod-key: #1f3a5f;
+    --layer-key: #2d1f3f;
+    --thumb-key: #1f3f2d;
+    --special-key: #3f2d1f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+  .subtitle { color: var(--text-muted); margin-bottom: 2rem; }
+  .layer-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .layer-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.15s;
+  }
+  .layer-btn:hover { border-color: var(--accent); }
+  .layer-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .layer { display: none; }
+  .layer.active { display: block; }
+  .layer-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .layer-desc {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+  .keyboard {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .half { display: flex; flex-direction: column; gap: 0.375rem; }
+  .row { display: flex; gap: 0.375rem; justify-content: center; }
+  .key {
+    background: var(--key-bg);
+    border: 1px solid var(--key-border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    min-width: 52px;
+    text-align: center;
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .key:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .key .label { font-weight: 600; font-size: 0.875rem; }
+  .key .sub { font-size: 0.625rem; color: var(--text-muted); margin-top: 1px; }
+  .key.mod { background: var(--mod-key); border-color: #2d4f7f; }
+  .key.layer { background: var(--layer-key); border-color: #4f2d7f; }
+  .key.thumb { background: var(--thumb-key); border-color: #2d7f4f; min-width: 64px; }
+  .key.special { background: var(--special-key); border-color: #7f4f2d; }
+  .key.wide { min-width: 72px; }
+  .key.trans {
+    background: transparent;
+    border-style: dashed;
+    color: var(--text-muted);
+  }
+  .legend {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.375rem; }
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid var(--key-border);
+  }
+  .info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .info code {
+    background: var(--key-bg);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+  }
+  @media (max-width: 640px) {
+    .key { min-width: 40px; padding: 0.375rem 0.5rem; font-size: 0.6875rem; }
+    .key .label { font-size: 0.75rem; }
+    .key .sub { font-size: 0.5625rem; }
+    .keyboard { gap: 0.75rem; }
+    .half { gap: 0.25rem; }
+    .row { gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Cradio Keymap</h1>
+  <p class="subtitle">nice!nano v2 · ZMK main · 4 layers</p>
+
+  <div class="layer-nav">
+    <button class="layer-btn active" onclick="showLayer(0)">0 — QWERTY</button>
+    <button class="layer-btn" onclick="showLayer(1)">1 — Symbols</button>
+    <button class="layer-btn" onclick="showLayer(2)">2 — Nav &amp; Media</button>
+    <button class="layer-btn" onclick="showLayer(3)">3 — Numpad</button>
+  </div>
+
+  <!-- LAYER 0: QWERTY -->
+  <div class="layer active" id="layer0">
+    <div class="layer-title">Layer 0 — QWERTY</div>
+    <div class="layer-desc">Default layer with home row mods (tap-preferred, 285ms)</div>
+    <div class="keyboard">
+      <div class="half">
+        <div class="row">
+          <div class="key"><span class="label">Q</span></div>
+          <div class="key"><span class="label">W</span></div>
+          <div class="key"><span class="label">E</span></div>
+          <div class="key"><span class="label">R</span></div>
+          <div class="key"><span class="label">T</span></div>
+        </div>
+        <div class="row">
+          <div class="key mod"><span class="label">A</span><span class="sub">⇧ Shift</span></div>
+          <div class="key mod"><span class="label">S</span><span class="sub">⌃ Ctrl</span></div>
+          <div class="key mod"><span class="label">D</span><span class="sub">⌥ Alt</span></div>
+          <div class="key mod"><span class="label">F</span><span class="sub">⌘ Gui</span></div>
+          <div class="key"><span class="label">G</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">Z</span></div>
+          <div class="key"><span class="label">X</span></div>
+          <div class="key"><span class="label">C</span></div>
+          <div class="key"><span class="label">V</span></div>
+          <div class="key"><span class="label">B</span></div>
+        </div>
+        <div class="row">
+          <div class="key layer"><span class="label">Nav</span><span class="sub">hold L2</span></div>
+          <div class="key thumb"><span class="label">Space</span></div>
+        </div>
+      </div>
+      <div class="half">
+        <div class="row">
+          <div class="key"><span class="label">Y</span></div>
+          <div class="key"><span class="label">U</span></div>
+          <div class="key"><span class="label">I</span></div>
+          <div class="key"><span class="label">O</span></div>
+          <div class="key"><span class="label">P</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">H</span></div>
+          <div class="key mod"><span class="label">J</span><span class="sub">⌘ Gui</span></div>
+          <div class="key mod"><span class="label">K</span><span class="sub">⌥ Alt</span></div>
+          <div class="key mod"><span class="label">L</span><span class="sub">⌃ Ctrl</span></div>
+          <div class="key mod"><span class="label">'</span><span class="sub">⇧ Shift</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">N</span></div>
+          <div class="key"><span class="label">M</span></div>
+          <div class="key"><span class="label">,</span></div>
+          <div class="key"><span class="label">.</span></div>
+          <div class="key"><span class="label">/</span></div>
+        </div>
+        <div class="row">
+          <div class="key thumb"><span class="label">Bspc</span></div>
+          <div class="key layer"><span class="label">Sym</span><span class="sub">hold L1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 1: SYMBOLS -->
+  <div class="layer" id="layer1">
+    <div class="layer-title">Layer 1 — Symbols</div>
+    <div class="layer-desc">Symbols and punctuation</div>
+    <div class="keyboard">
+      <div class="half">
+        <div class="row">
+          <div class="key special"><span class="label">Esc</span></div>
+          <div class="key"><span class="label">~</span></div>
+          <div class="key"><span class="label">{</span></div>
+          <div class="key"><span class="label">}</span></div>
+          <div class="key"><span class="label">`</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">!</span></div>
+          <div class="key"><span class="label">@</span></div>
+          <div class="key"><span class="label">#</span></div>
+          <div class="key"><span class="label">$</span></div>
+          <div class="key"><span class="label">%</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">^</span></div>
+          <div class="key"><span class="label">&amp;</span></div>
+          <div class="key"><span class="label">\</span></div>
+          <div class="key"><span class="label">/</span></div>
+          <div class="key"><span class="label">|</span></div>
+        </div>
+        <div class="row">
+          <div class="key layer"><span class="label">Num</span><span class="sub">hold L3</span></div>
+          <div class="key thumb"><span class="label">Space</span></div>
+        </div>
+      </div>
+      <div class="half">
+        <div class="row">
+          <div class="key"><span class="label">;</span></div>
+          <div class="key"><span class="label">[</span></div>
+          <div class="key"><span class="label">]</span></div>
+          <div class="key"><span class="label">(</span></div>
+          <div class="key"><span class="label">)</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">-</span></div>
+          <div class="key mod"><span class="label">⌘</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌥</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⇧</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌃</span><span class="sub">sticky</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">=</span></div>
+          <div class="key"><span class="label">+</span></div>
+          <div class="key"><span class="label">*</span></div>
+          <div class="key"><span class="label">?</span></div>
+          <div class="key"><span class="label">~</span></div>
+        </div>
+        <div class="row">
+          <div class="key thumb"><span class="label">Bspc</span></div>
+          <div class="key trans"><span class="label">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 2: NAV & MEDIA -->
+  <div class="layer" id="layer2">
+    <div class="layer-title">Layer 2 — Navigation &amp; Media</div>
+    <div class="layer-desc">Arrow keys, media controls, Bluetooth profiles</div>
+    <div class="keyboard">
+      <div class="half">
+        <div class="row">
+          <div class="key special"><span class="label">Esc</span></div>
+          <div class="key special"><span class="label">Mute</span></div>
+          <div class="key special"><span class="label">Vol↓</span></div>
+          <div class="key special"><span class="label">Vol↑</span></div>
+          <div class="key special"><span class="label">Bri↑</span></div>
+        </div>
+        <div class="row">
+          <div class="key mod"><span class="label">⌃</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⇧</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌥</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌘</span><span class="sub">sticky</span></div>
+          <div class="key special"><span class="label">Bri↓</span></div>
+        </div>
+        <div class="row">
+          <div class="key special"><span class="label">Caps</span></div>
+          <div class="key special"><span class="label">Stop</span></div>
+          <div class="key special"><span class="label">⏮</span></div>
+          <div class="key special"><span class="label">⏭</span></div>
+          <div class="key special"><span class="label">⏯</span></div>
+        </div>
+        <div class="row">
+          <div class="key trans"><span class="label">—</span></div>
+          <div class="key thumb"><span class="label">Space</span></div>
+        </div>
+      </div>
+      <div class="half">
+        <div class="row">
+          <div class="key special"><span class="label">PgUp</span></div>
+          <div class="key special"><span class="label">Home</span></div>
+          <div class="key special"><span class="label">↑</span></div>
+          <div class="key special"><span class="label">End</span></div>
+          <div class="key special"><span class="label">Del</span></div>
+        </div>
+        <div class="row">
+          <div class="key special"><span class="label">Tab</span></div>
+          <div class="key special"><span class="label">←</span></div>
+          <div class="key special"><span class="label">↓</span></div>
+          <div class="key special"><span class="label">→</span></div>
+          <div class="key special"><span class="label">Enter</span></div>
+        </div>
+        <div class="row">
+          <div class="key special"><span class="label">PgDn</span></div>
+          <div class="key special"><span class="label">BT 0</span><span class="sub">select</span></div>
+          <div class="key special"><span class="label">BT 1</span><span class="sub">select</span></div>
+          <div class="key special"><span class="label">BT 2</span><span class="sub">select</span></div>
+          <div class="key special"><span class="label">BT ✕</span><span class="sub">clear</span></div>
+        </div>
+        <div class="row">
+          <div class="key thumb"><span class="label">Bspc</span></div>
+          <div class="key layer"><span class="label">Num</span><span class="sub">hold L3</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 3: NUMPAD -->
+  <div class="layer" id="layer3">
+    <div class="layer-title">Layer 3 — Numpad &amp; F-keys</div>
+    <div class="layer-desc">Number row and function keys</div>
+    <div class="keyboard">
+      <div class="half">
+        <div class="row">
+          <div class="key"><span class="label">1</span></div>
+          <div class="key"><span class="label">2</span></div>
+          <div class="key"><span class="label">3</span></div>
+          <div class="key"><span class="label">4</span></div>
+          <div class="key"><span class="label">5</span></div>
+        </div>
+        <div class="row">
+          <div class="key mod"><span class="label">⌃</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⇧</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌥</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌘</span><span class="sub">sticky</span></div>
+          <div class="key"><span class="label">F11</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">F1</span></div>
+          <div class="key"><span class="label">F2</span></div>
+          <div class="key"><span class="label">F3</span></div>
+          <div class="key"><span class="label">F4</span></div>
+          <div class="key"><span class="label">F5</span></div>
+        </div>
+        <div class="row">
+          <div class="key trans"><span class="label">—</span></div>
+          <div class="key thumb"><span class="label">Space</span></div>
+        </div>
+      </div>
+      <div class="half">
+        <div class="row">
+          <div class="key"><span class="label">6</span></div>
+          <div class="key"><span class="label">7</span></div>
+          <div class="key"><span class="label">8</span></div>
+          <div class="key"><span class="label">9</span></div>
+          <div class="key"><span class="label">0</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">F12</span></div>
+          <div class="key mod"><span class="label">⌘</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌥</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⇧</span><span class="sub">sticky</span></div>
+          <div class="key mod"><span class="label">⌃</span><span class="sub">sticky</span></div>
+        </div>
+        <div class="row">
+          <div class="key"><span class="label">F6</span></div>
+          <div class="key"><span class="label">F7</span></div>
+          <div class="key"><span class="label">F8</span></div>
+          <div class="key"><span class="label">F9</span></div>
+          <div class="key"><span class="label">F10</span></div>
+        </div>
+        <div class="row">
+          <div class="key thumb"><span class="label">Bspc</span></div>
+          <div class="key trans"><span class="label">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--mod-key)"></div> Home row mod</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--layer-key)"></div> Layer tap</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--thumb-key)"></div> Thumb key</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--special-key)"></div> Special</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:transparent;border:1px dashed var(--text-muted)"></div> Transparent</div>
+  </div>
+
+  <div class="info">
+    <strong>Home row mods</strong> — tap-preferred, 285ms tapping term. Hold for modifier, tap for key.<br>
+    <strong>Layer access</strong> — hold thumb + layer key for momentary layer.<br>
+    <strong>Bluetooth</strong> — Layer 2 right side: select profile 0/1/2, or clear pairing.<br>
+    <strong>Build</strong> — ZMK <code>main</code> branch · Zephyr 4.1.0 · nice!nano v2
+  </div>
+</div>
+
+<script>
+function showLayer(n) {
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('layer' + n).classList.add('active');
+  document.querySelectorAll('.layer-btn')[n].classList.add('active');
+}
+</script>
+</body>
+</html>
