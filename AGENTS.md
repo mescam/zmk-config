@@ -3,6 +3,10 @@
 ## Build Commands
 
 ```bash
+# First time: fetch dependencies (~2GB)
+nix develop --command west update
+
+# Build firmware
 nix run .#build-left     # Build left half → cradio_left.uf2
 nix run .#build-right    # Build right half → cradio_right.uf2
 nix run .#build-all      # Build both
@@ -10,7 +14,7 @@ nix run .#build-all      # Build both
 nix develop              # Enter shell with west, cmake, arm toolchain
 ```
 
-First build downloads ~2GB of dependencies (Zephyr, ZMK, modules). Subsequent builds are cached.
+ZMK revision is pinned in `config/west.yml`. Run `west update` again only when changing the pin.
 
 ## Architecture
 

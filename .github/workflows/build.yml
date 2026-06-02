@@ -34,7 +34,7 @@ jobs:
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@v8
 
-      - name: Init west
+      - name: Fetch dependencies
         run: nix develop --command west update
 
       - name: Build ${{ matrix.shield }}
