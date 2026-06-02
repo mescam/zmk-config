@@ -1,0 +1,29 @@
+# Build artifacts
+build/
+build_*/
+*.uf2
+*.elf
+*.bin
+*.hex
+*.map
+
+# West/Zephyr fetched dependencies
+.west/
+zmk/
+zephyr/
+modules/
+optional/
+
+# Nix
+result
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

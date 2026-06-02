@@ -1,5 +1,73 @@
-on: [push, pull_request, workflow_dispatch]
+name: Build ZMK Firmware
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'config/**'
+      - 'boards/**'
+      - 'flake.nix'
+      - 'flake.lock'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shield: [cradio_left, cradio_right]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Init west
+        run: nix develop --command west update
+
+      - name: Build ${{ matrix.shield }}
+        run: nix run .#build-${{ matrix.shield == 'cradio_left' && 'left' || 'right' }}
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.shield }}
+          path: ${{ matrix.shield }}.uf2
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.sha }}
+          name: Build ${{ github.sha }}
+          files: artifacts/**/*.uf2
+          generate_release_notes: true
+          draft: true
